@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>NFC 音乐</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="background:#000;color:#fff;text-align:center;padding-top:40px;">
+
+<h2>🎵 NFC 音乐</h2>
+
+<div onclick="play(0)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲一</div>
+<div onclick="play(1)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲二</div>
+<div onclick="play(2)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲三</div>
+
+<p id="hint" style="color:#aaa;"></p >
+
+<audio id="player"></audio>
+
+<script>
+  const songs = ['music1.mp3','music2.mp3','music3.mp3'];
+  const player = document.getElementById('player');
+  const hint = document.getElementById('hint');
+
+  function play(i) {
+    player.src = songs[i];
+    player.play();
+    hint.innerText = '';
+  }
+
+  const params = new URLSearchParams(location.search);
+  const s = params.get('song');
+  if (s !== null && songs[s-1]) {
+    player.src = songs[s-1];
+    player.play().catch(()=>{
+      hint.innerText = '点一下歌曲即可播放';
+    });
+  }
+</script>
+
+</body>
+</html>
