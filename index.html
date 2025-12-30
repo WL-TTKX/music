@@ -26,11 +26,6 @@ button{
 button:active{
   background:#444;
 }
-#unlock{
-  background:#1db954;
-  color:#000;
-  font-weight:bold;
-}
 #toggle{
   background:#444;
 }
@@ -46,11 +41,7 @@ button:active{
 
 <h2>🎵 NFC 音乐卡</h2>
 
-<!-- 解锁按钮 -->
-<button id="unlock">🔓 点击解锁播放</button>
-
-<!-- 歌曲列表 -->
-<div id="list" style="display:none">
+<div id="list">
   <button onclick="play(0)">歌曲一</button>
   <button onclick="play(1)">歌曲二</button>
   <button onclick="play(2)">歌曲三</button>
@@ -58,42 +49,22 @@ button:active{
   <button onclick="togglePlay()" id="toggle">⏸ 暂停</button>
 </div>
 
+<audio id="player"></audio>
+
 <script>
 const songs = ['music1.mp3','music2.mp3','music3.mp3'];
-let player = null;
-const unlock = document.getElementById('unlock');
-const list = document.getElementById('list');
+const player = document.getElementById('player');
 const toggleBtn = document.getElementById('toggle');
 
-// 点击解锁（终极方案）
-unlock.addEventListener('click', ()=>{
-  // 创建一个临时 audio 元素立即播放空音频，解锁 WebView
-  const temp = new Audio();
-  temp.src = songs[0]; // 播放第一首即可解锁
-  temp.volume = 0; // 静音
-  temp.play().then(()=>{
-    // 初始化全局 player
-    player = new Audio();
-    player.src = songs[0];
-    player.volume = 1;
-    unlock.style.display = 'none';
-    list.style.display = 'block';
-  }).catch(()=>{
-    alert('请再点一次解锁');
-  });
-});
-
-// 播放指定歌曲
 function play(i){
-  if(!player) return;
   player.src = songs[i];
-  player.play();
+  player.play().catch(()=>{
+    alert('播放被浏览器阻止，请手动点击播放');
+  });
   toggleBtn.innerText = '⏸ 暂停';
 }
 
-// 暂停 / 继续
 function togglePlay(){
-  if(!player) return;
   if(player.paused){
     player.play();
     toggleBtn.innerText = '⏸ 暂停';
@@ -104,7 +75,7 @@ function togglePlay(){
 }
 </script>
 
-<div class="footer">Tap NFC · Tap Unlock · Enjoy Music</div>
+<div class="footer">Tap NFC · Tap Song · Enjoy Music</div>
 
 </body>
 </html>
