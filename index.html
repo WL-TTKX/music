@@ -1,41 +1,102 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>NFC 音乐</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>NFC 音乐卡</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  background:#000;
+  color:#fff;
+  text-align:center;
+  padding-top:40px;
+  font-family:system-ui;
+}
+button{
+  width:80%;
+  padding:16px;
+  margin:12px auto;
+  font-size:16px;
+  background:#222;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:8px;
+}
+button:active{
+  background:#444;
+}
+#unlock{
+  background:#1db954;
+  color:#000;
+  font-weight:bold;
+}
+#toggle{
+  background:#444;
+}
+.footer{
+  color:#888;
+  font-size:12px;
+  margin-top:30px;
+}
+</style>
 </head>
-<body style="background:#000;color:#fff;text-align:center;padding-top:40px;">
 
-<h2>🎵 NFC 音乐</h2>
+<body>
 
-<div onclick="play(0)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲一</div>
-<div onclick="play(1)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲二</div>
-<div onclick="play(2)" style="padding:15px;border:1px solid #444;margin:10px;">歌曲三</div>
+<h2>🎵 NFC 音乐卡</h2>
 
-<p id="hint" style="color:#aaa;"></p >
+<!-- 解锁按钮 -->
+<button id="unlock">🔓 点击解锁播放</button>
+
+<!-- 歌曲列表 -->
+<div id="list" style="display:none">
+  <button onclick="play(0)">歌曲一</button>
+  <button onclick="play(1)">歌曲二</button>
+  <button onclick="play(2)">歌曲三</button>
+
+  <button onclick="togglePlay()" id="toggle">⏸ 暂停</button>
+</div>
 
 <audio id="player"></audio>
 
+<div class="footer">Tap NFC · Tap Unlock · Enjoy Music</div>
+
 <script>
-  const songs = ['music1.mp3','music2.mp3','music3.mp3'];
-  const player = document.getElementById('player');
-  const hint = document.getElementById('hint');
+const songs = ['music1.mp3','music2.mp3','music3.mp3'];
+const player = document.getElementById('player');
+const unlock = document.getElementById('unlock');
+const list = document.getElementById('list');
+const toggleBtn = document.getElementById('toggle');
 
-  function play(i) {
-    player.src = songs[i];
+// 解锁音频（关键步骤）
+unlock.addEventListener('click', ()=>{
+  player.play().then(()=>{
+    player.pause();
+    unlock.style.display = 'none';
+    list.style.display = 'block';
+  }).catch(()=>{
+    alert('请再点一次解锁');
+  });
+});
+
+// 播放指定歌曲
+function play(i){
+  player.src = songs[i];
+  player.play();
+  toggleBtn.innerText = '⏸ 暂停';
+}
+
+// 暂停 / 继续
+function togglePlay(){
+  if(player.paused){
     player.play();
-    hint.innerText = '';
+    toggleBtn.innerText = '⏸ 暂停';
+  }else{
+    player.pause();
+    toggleBtn.innerText = '▶ 继续';
   }
-
-  const params = new URLSearchParams(location.search);
-  const s = params.get('song');
-  if (s !== null && songs[s-1]) {
-    player.src = songs[s-1];
-    player.play().catch(()=>{
-      hint.innerText = '点一下歌曲即可播放';
-    });
-  }
+}
 </script>
 
 </body>
